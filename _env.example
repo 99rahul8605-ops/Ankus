@@ -1,0 +1,25 @@
+# ══════════════════════════════════════════════
+#  StuBot — CA Inter Lectures  |  .env file
+# ══════════════════════════════════════════════
+
+# 1. BOT_TOKEN — @BotFather → /newbot
+BOT_TOKEN=your_bot_token_here
+
+# 2. MONGO_URI — MongoDB Atlas (free) → New Cluster → Connect
+MONGO_URI=mongodb+srv://user:password@cluster.mongodb.net/stubot_inter?retryWrites=true&w=majority
+
+# 3. WEB_URL — Jahan app deploy hogi (AWS/Render/Railway URL)
+WEB_URL=https://your-app-url.com
+
+# 4. OWNER_ID — Tumhara Telegram ID (@userinfobot se pata karo)
+OWNER_ID=123456789
+
+# 5. PORT (default 3000)
+PORT=3000
+
+# ── Force Join Channel ────────────────────────
+# Sirf Channel ID dalo — naam aur link bot automatically Telegram se le lega!
+# Bot ko channel mein Admin banana zaroori hai ("Add Members" permission ke saath)
+# Multiple channels: comma se alag karo → -1001111111111,-1002222222222
+
+FORCE_JOIN_CHANNELS=-1001234567890
