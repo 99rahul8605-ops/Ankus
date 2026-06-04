@@ -1,0 +1,17 @@
+# ══════════════════════════════════════════════
+#  StuBot — CA Inter Lectures  |  .env
+# ══════════════════════════════════════════════
+
+# Render/Railway pe deploy karo toh WEB_URL apne aap set ho jaati hai!
+# Manually dalne ki zarurat sirf tab hai jab koi aur platform use karo.
+
+BOT_TOKEN=your_bot_token_here
+MONGO_URI=mongodb+srv://user:password@cluster.mongodb.net/stubot_inter?retryWrites=true&w=majority
+OWNER_ID=123456789
+
+# WEB_URL — Sirf tab dalo jab Render/Railway nahi use kar rahe
+# WEB_URL=https://your-custom-url.com
+
+# Force Join — Sirf Channel ID chahiye (naam/link auto milta hai)
+# Bot ko channel mein Admin banana zaroori hai
+FORCE_JOIN_CHANNELS=-1001234567890
