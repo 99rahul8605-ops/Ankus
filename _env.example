@@ -1,0 +1,19 @@
+# ── Required ────────────────────────────────────────────────────────────────
+BOT_TOKEN=your_bot_token_here
+MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/stubot?retryWrites=true&w=majority
+WEB_URL=https://your-app.onrender.com
+OWNER_ID=123456789
+
+# ── Force Join (comma-separated channel/group IDs or @usernames) ─────────────
+# Leave empty to disable force join
+FORCE_JOIN_CHANNELS=-1001234567890,-1009876543210
+
+# ── File Storage Channel ─────────────────────────────────────────────────────
+# A private channel where the bot is admin — used to store files safely
+STORAGE_CHANNEL_ID=-1001234567890
+
+# ── Premium Referral Config ──────────────────────────────────────────────────
+# How many valid referrals needed to unlock premium (default: 5)
+PREMIUM_REFERRAL_COUNT=5
+# How many days premium stays active after unlock (default: 7)
+PREMIUM_DAYS=7
