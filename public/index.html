@@ -3431,25 +3431,23 @@ openBatch = function(bid) {
       openReferralUnlockModal(bid);
       return;
     }
-    // If unlocked via referral, check if batch data still has stripped (empty) links.
-    // This happens when the batch was loaded while the user was still locked.
+    // Regardless of HOW access was granted (referral, reward, or admin-added premiumUsers),
+    // the cached batch data may still have stripped (empty) links — this happens whenever
+    // the batch was loaded/cached while the user was still locked.
     // Fetch fresh data first so lectures open instantly without "Link not available".
-    var isReferralUnlock = (refStatus && refStatus.unlocked) && !hasBatchRewardAccess(bid) && !(b.premiumUsers && b.premiumUsers.includes(curUid));
-    if (isReferralUnlock) {
-      var hasLiveLinks = b.subjects && b.subjects.some(function(s) {
-        return s.chapters && s.chapters.some(function(c) {
-          return (c.lectures && c.lectures.some(function(l) { return !!l.link; })) ||
-                 (c.units && c.units.some(function(u) { return u.lectures && u.lectures.some(function(l) { return !!l.link; }); }));
-        });
+    var hasLiveLinks = b.subjects && b.subjects.some(function(s) {
+      return s.chapters && s.chapters.some(function(c) {
+        return (c.lectures && c.lectures.some(function(l) { return !!l.link; })) ||
+               (c.units && c.units.some(function(u) { return u.lectures && u.lectures.some(function(l) { return !!l.link; }); }));
       });
-      if (!hasLiveLinks) {
-        fetch('/api/batches/' + bid).then(function(r) { return r.json(); }).then(function(fresh) {
-          var idx = batches.findIndex(function(x) { return x._id === bid; });
-          if (idx !== -1) batches[idx] = fresh;
-          _origOpenBatch(bid);
-        }).catch(function() { _origOpenBatch(bid); });
-        return;
-      }
+    });
+    if (!hasLiveLinks) {
+      fetch('/api/batches/' + bid).then(function(r) { return r.json(); }).then(function(fresh) {
+        var idx = batches.findIndex(function(x) { return x._id === bid; });
+        if (idx !== -1) batches[idx] = fresh;
+        _origOpenBatch(bid);
+      }).catch(function() { _origOpenBatch(bid); });
+      return;
     }
     // Access granted (permanent, reward, or referral) — open directly
     _origOpenBatch(bid);
