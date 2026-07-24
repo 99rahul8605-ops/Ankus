@@ -3001,7 +3001,7 @@ function _lecRowHtml(l, i) {
     ? '<div style="margin-top:6px"><span class="coming-soon-badge">🔜 Coming Soon</span></div>'
     : `<div class="lec-mini-btns">
         ${l.isDemo ? '<span class="demo-badge" style="margin-right:4px">DEMO</span>' : ''}
-        <button class="lec-mini-btn lec-mini-watch" data-lid="${l._id}" onclick="_watchLecture(this.dataset.lid)"><i class="ti ti-player-play-filled"></i> Lecture</button>
+        <button class="lec-mini-btn lec-mini-watch" data-lid="${l._id}" onclick="markLectureWatched(this.dataset.lid);openLecLink(_popupLectures[this.dataset.lid].link,'lecture')"><i class="ti ti-player-play-filled"></i> Lecture</button>
         ${l.notes ? `<button class="lec-mini-btn lec-mini-notes" data-lid="${l._id}" onclick="openLink(_popupLectures[this.dataset.lid].notes,'notes')"><i class="ti ti-notes"></i> Notes</button>` : ''}
       </div>`;
   return `
@@ -3013,48 +3013,6 @@ function _lecRowHtml(l, i) {
       </div>
       ${checkBtn}
     </div>`;
-}
-
-// Clicking "Lecture" always marks watched, then tries to open the link.
-// If the link is missing (batch data was cached while locked/stale), do ONE
-// silent refetch of the current batch before giving up with "Link not available!".
-// This covers every unlock path (referral, reward, premiumUsers, demo, or plain
-// stale cache) regardless of how the user navigated to this lecture.
-async function _watchLecture(lid) {
-  markLectureWatched(lid);
-  var l = _popupLectures[lid];
-  if (l && l.link) { openLecLink(l.link, 'lecture'); return; }
-  if (_currentOpenBid) {
-    try {
-      var fresh = await fetch('/api/batches/' + _currentOpenBid).then(function(r) { return r.json(); });
-      var idx = batches.findIndex(function(x) { return x._id === _currentOpenBid; });
-      if (idx !== -1) batches[idx] = fresh;
-      var freshLec = _findLectureById(fresh, lid);
-      if (freshLec) {
-        _popupLectures[lid] = freshLec;
-        if (freshLec.link) { openLecLink(freshLec.link, 'lecture'); return; }
-      }
-    } catch (e) { /* fall through to "Link not available!" below */ }
-  }
-  openLecLink(l ? l.link : '', 'lecture');
-}
-
-function _findLectureById(b, lid) {
-  if (!b || !b.subjects) return null;
-  for (var si = 0; si < b.subjects.length; si++) {
-    var chapters = b.subjects[si].chapters || [];
-    for (var ci = 0; ci < chapters.length; ci++) {
-      var c = chapters[ci];
-      var direct = (c.lectures || []).find(function(l) { return l._id === lid; });
-      if (direct) return direct;
-      var units = c.units || [];
-      for (var ui = 0; ui < units.length; ui++) {
-        var found = (units[ui].lectures || []).find(function(l) { return l._id === lid; });
-        if (found) return found;
-      }
-    }
-  }
-  return null;
 }
 
 function openLecLink(codeOrLink, type) {
