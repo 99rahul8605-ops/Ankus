@@ -2748,6 +2748,24 @@ function openDemoModal(bid) {
   var b = batches.find(x => x._id === bid);
   if (!b) return;
   var demos = _getAllDemoLectures(b);
+  // Demo lectures must be watchable even when the batch itself is locked, but the
+  // cached batch data may still have stripped (empty) links if it was loaded before
+  // this demo lecture was marked/added, or while stale. Refetch fresh data first so
+  // "Watch" doesn't show "Link not available!".
+  var hasStrippedDemoLink = demos.some(function(l) { return !l.link; });
+  if (hasStrippedDemoLink) {
+    fetch('/api/batches/' + bid).then(function(r) { return r.json(); }).then(function(fresh) {
+      var idx = batches.findIndex(function(x) { return x._id === bid; });
+      if (idx !== -1) batches[idx] = fresh;
+      _renderDemoModal(fresh || b, bid);
+    }).catch(function() { _renderDemoModal(b, bid); });
+    return;
+  }
+  _renderDemoModal(b, bid);
+}
+
+function _renderDemoModal(b, bid) {
+  var demos = _getAllDemoLectures(b);
   var modal = document.getElementById('demoModal');
   document.getElementById('demoModalTitle').textContent = b.name + ' — Demo Lectures';
   var listEl = document.getElementById('demoLecList');
