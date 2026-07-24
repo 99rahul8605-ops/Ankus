@@ -2005,7 +2005,7 @@ async function _loadBatchReferralStatuses() {
   // so we need fresh data (with real links) as soon as the batch is unlocked.
   await Promise.all(batchesToRefresh.map(async function(bid) {
     try {
-      var fresh = await (await fetch('/api/batches/' + bid)).json();
+      var fresh = await apiFetch('/api/batches/' + bid);
       var idx = batches.findIndex(function(x) { return x._id === bid; });
       if (idx !== -1) batches[idx] = fresh;
     } catch(e) {}
@@ -2754,7 +2754,7 @@ function openDemoModal(bid) {
   // "Watch" doesn't show "Link not available!".
   var hasStrippedDemoLink = demos.some(function(l) { return !l.link; });
   if (hasStrippedDemoLink) {
-    fetch('/api/batches/' + bid).then(function(r) { return r.json(); }).then(function(fresh) {
+    apiFetch('/api/batches/' + bid).then(function(fresh) {
       var idx = batches.findIndex(function(x) { return x._id === bid; });
       if (idx !== -1) batches[idx] = fresh;
       _renderDemoModal(fresh || b, bid);
@@ -3460,7 +3460,7 @@ openBatch = function(bid) {
       });
     });
     if (!hasLiveLinks) {
-      fetch('/api/batches/' + bid).then(function(r) { return r.json(); }).then(function(fresh) {
+      apiFetch('/api/batches/' + bid).then(function(fresh) {
         var idx = batches.findIndex(function(x) { return x._id === bid; });
         if (idx !== -1) batches[idx] = fresh;
         _origOpenBatch(bid);
